@@ -18,5 +18,10 @@ namespace sales_mvc.Controllers
 
             return View(sellersList);
         }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
     }
 }
