@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace sales_mvc.Services
 {
@@ -16,9 +17,9 @@ namespace sales_mvc.Services
             _context = context;
         }
 
-        public List<Department> FindAll()
+        public async Task<List<Department>> FindAll()
         {
-            return _context.Department.OrderBy(department => department.Name).ToList();
+            return await _context.Department.OrderBy(department => department.Name).ToListAsync();
         }
     }
 }

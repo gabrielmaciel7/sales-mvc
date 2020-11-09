@@ -5,6 +5,7 @@ using sales_mvc.Services;
 using sales_mvc.Services.Exceptions;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace sales_mvc.Controllers
 {
@@ -19,16 +20,16 @@ namespace sales_mvc.Controllers
             _departmentService = departmentService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var sellersList = _sellerService.FindAll();
+            var sellersList = await _sellerService.FindAll();
 
             return View(sellersList);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var departments = _departmentService.FindAll();
+            var departments = await _departmentService.FindAll();
             var viewModel = new SellerFormViewModel { Departments = departments };
 
             return View(viewModel);
@@ -36,26 +37,26 @@ namespace sales_mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Seller seller)
+        public async Task<IActionResult> Create(Seller seller)
         {
             if (!ModelState.IsValid)
             {
                 return View(seller);
             }
 
-            _sellerService.Insert(seller);
+            await _sellerService.Insert(seller);
 
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided." });
             }
 
-            var seller = _sellerService.FindById(id.Value);
+            var seller = await _sellerService.FindById(id.Value);
 
             if (seller == null)
             {
@@ -67,21 +68,21 @@ namespace sales_mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _sellerService.Remove(id);
+            await _sellerService.Remove(id);
 
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided." });
             }
 
-            var seller = _sellerService.FindById(id.Value);
+            var seller = await _sellerService.FindById(id.Value);
 
             if (seller == null)
             {
@@ -91,21 +92,21 @@ namespace sales_mvc.Controllers
             return View(seller);
         }
 
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided." });
             }
 
-            var seller = _sellerService.FindById(id.Value);
+            var seller = await _sellerService.FindById(id.Value);
 
             if (seller == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found." });
             }
 
-            var departments = _departmentService.FindAll();
+            var departments = await _departmentService.FindAll();
             var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
 
             return View(viewModel);
@@ -113,11 +114,11 @@ namespace sales_mvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Seller seller)
+        public async Task<IActionResult> Edit(int id, Seller seller)
         {
             if (!ModelState.IsValid)
             {
-                var departments = _departmentService.FindAll();
+                var departments = await _departmentService.FindAll();
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
 
                 return View(viewModel);
@@ -130,7 +131,7 @@ namespace sales_mvc.Controllers
 
             try
             {
-                _sellerService.Update(seller);
+                await _sellerService.Update(seller);
 
                 return RedirectToAction(nameof(Index));
             }
